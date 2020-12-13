@@ -8,6 +8,7 @@ from .serializers import (GetAllUserSerializer, AddUserSerializer,
                           )
 from rest_framework.response import Response
 import jwt
+from rest_framework import status
 
 """USER"""
 
@@ -24,9 +25,9 @@ class GetAddUser(APIView):
 
         if user.is_valid():
             user.save()
-            return Response('created user')
+            return Response(status=status.HTTP_201_CREATED)
         else:
-            return Response('error')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
         id_object = request.data.get('id')
@@ -67,7 +68,9 @@ class ChangePassword(APIView):
         if user.check_password(oldpassword):
             user.set_password(newpass)
             user.save()
-        return Response('ues')
+            return Response('')
+        else:
+            return Response('old password is incorrect')
 
 
 """meals"""
@@ -129,9 +132,9 @@ class ApiTables(APIView):
 
         if table.is_valid():
             table.save()
-            return Response('created')
+            return Response(status=status.HTTP_201_CREATED)
         else:
-            return Response('error')
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
         id_object = request.data.get('id')
