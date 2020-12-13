@@ -59,9 +59,15 @@ class LoginUserClass(APIView):
 
 class ChangePassword(APIView):
     def get(self, request):
-        user = request.user
-        print(user)
-        return Response(user)
+        token = request.data.get('token')
+        token = jwt.decode(token, settings.SECRET_KEY, algorithm='HS256')
+        user = User.objects.get(id=token['id'])
+        oldpassword = request.data.get('oldpassword')
+        newpass = request.data.get('newpassword')
+        if user.check_password(oldpassword):
+            user.set_password(newpass)
+            user.save()
+        return Response('ues')
 
 
 """meals"""
