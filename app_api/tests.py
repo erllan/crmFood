@@ -35,5 +35,5 @@ class TestApi(APITestCase):
         self.assertEqual(User.objects.count(), 2)
 
     def test_token(self):
-        response = self.client.get("/login/test_12/testtesteat")
-        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        response = self.client.get("/login/test_12/testtesttesttest")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
