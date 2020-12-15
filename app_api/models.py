@@ -96,7 +96,8 @@ class OrderMeal(models.Model):
     count = models.IntegerField(default=0)
 
     def name(self):
-        return self.meal.name
+        name = self.meal.name
+        return name
 
     def total(self):
         total = self.count * self.meal.price

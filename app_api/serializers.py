@@ -11,7 +11,6 @@ class GetAllUserSerializer(serializers.ModelSerializer):
 
 
 class AddUserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ["name", "surname", "login", "email", "roleid", "phone", 'password']
@@ -83,21 +82,28 @@ class SerializerMeals(serializers.ModelSerializer):
 """Serializer Order and Meals"""
 
 
-class SerializerOrderMeal(serializers.ModelSerializer):
+class SerializerPostOrderMeal(serializers.ModelSerializer):
     class Meta:
         model = OrderMeal
-        fields = ('id', 'name', 'count', 'price', 'total')
+        fields = ('meal', 'count')
+
+
+class SerializerGetOrderMeal(serializers.ModelSerializer):
+    class Meta:
+        model = OrderMeal
+        fields = ('id', 'name', 'count', 'total', 'price')
 
 
 class SerializerOrder(serializers.ModelSerializer):
-    ordermeal = SerializerOrderMeal(many=True)
+    ordermeal = SerializerPostOrderMeal(many=True)
 
     class Meta:
         model = Order
-        fields = ('tableid', 'ordermeal')
+        fields = ('tableid', 'ordermeal', 'waiterid')
 
     def create(self, validated_data):
-        meals_data = validated_data.pop("ordermeal")
+        meals_data = validated_data.pop('ordermeal')
+        print(validated_data)
         order = Order.objects.create(**validated_data)
         for a in meals_data:
             order.ordermeal.create(**a)
@@ -105,7 +111,7 @@ class SerializerOrder(serializers.ModelSerializer):
 
 
 class SerializerGetOrder(serializers.ModelSerializer):
-    ordermeal = SerializerOrderMeal(many=True, read_only=True)
+    ordermeal = SerializerGetOrderMeal(many=True, read_only=True)
 
     class Meta:
         model = Order
@@ -116,7 +122,7 @@ class SerializerGetOrder(serializers.ModelSerializer):
 
 
 class SerializerCheck(serializers.ModelSerializer):
-    meals = SerializerOrderMeal(many=True, read_only=True)
+    meals = SerializerGetOrderMeal(many=True, read_only=True)
 
     class Meta:
         model = Check
